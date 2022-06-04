@@ -39,3 +39,14 @@ p {
 	color: #fff;
 	margin: 2rem;
 }
+
+.section-create {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	margin: 1rem 0;
+}
+.section-create div h2 {
+	margin-bottom: 0.5rem;
+}

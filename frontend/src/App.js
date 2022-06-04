@@ -7,7 +7,7 @@ const App = () => {
 	return(
 		<Routes>
 			<Route path="/" element={<Layout />}>
-				<Route index path="/address" element={<AddressList />} />
+				<Route index element={<AddressList />} />
 			</Route>
 			{/* Catch all - could be replaced with 404 if wanted */}
 			<Route path="*" element={<Navigate to="/" replace />} />

@@ -9,9 +9,19 @@ const initialState = {
     error: null
 }
 
-export const fetchAddress = createAsyncThunk('api/address', async (address, { rejectWithValue }) => {
+export const fetchAddress = createAsyncThunk('api/address/get', async (address, { rejectWithValue }) => {
     try {
         const response = await axios.get(BASE_URL);
+        return response.data;
+    } catch (err) {
+        console.log(err);
+        return rejectWithValue(err.response.data);
+    }
+});
+
+export const postAddress = createAsyncThunk('api/address/post', async (address, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(BASE_URL, address);
         return response.data;
     } catch (err) {
         console.log(err);
@@ -33,13 +43,19 @@ const addressSlice = createSlice({
                 state.status = 'succeeded';
             })
             .addCase(fetchAddress.rejected, (state, action) => {
+                state.address = [];
                 state.status = 'failed';
                 state.error = action.error.message;
             })
-
+            .addCase(postAddress.fulfilled, (state, action) => {
+                state.address.unshift(action.payload);
+                state.status = 'succeeded';
+            })
     }
 });
 
+export const addressStatus = (state) => state.address.status;
+export const addressError = (state) => state.address.error;
 export const selectAllAddress = (state) => state.address;
 
 export default addressSlice.reducer
