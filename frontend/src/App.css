@@ -50,3 +50,7 @@ p {
 .section-create div h2 {
 	margin-bottom: 0.5rem;
 }
+
+.tableRows {
+	cursor: pointer;
+}

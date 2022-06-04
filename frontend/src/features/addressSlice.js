@@ -29,6 +29,29 @@ export const postAddress = createAsyncThunk('api/address/post', async (address, 
     }
 });
 
+export const updateAddress = createAsyncThunk('api/address/update', async (address, { rejectWithValue }) => {
+    try {
+        const { id } = address;
+        const response = await axios.put(`${BASE_URL}/${id}`);
+        return response.data;
+    } catch (err) {
+        console.log(err);
+        rejectWithValue(err.response.data);
+    }
+});
+
+export const deleteAddress = createAsyncThunk('api/address/delete', async (address, { rejectWithValue }) => {
+    try {
+        const { id } = address;
+        const response = await axios.delete(`${BASE_URL}/${id}`);
+        if (response?.status === 200) return address;
+        return `${response.status === 200}: ${response?.statusText}`;
+    } catch (err) {
+        console.log(err);
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const addressSlice = createSlice({
     name: 'address',
     initialState,
@@ -48,7 +71,21 @@ const addressSlice = createSlice({
                 state.error = action.error.message;
             })
             .addCase(postAddress.fulfilled, (state, action) => {
-                state.address.unshift(action.payload);
+                state.address.push(action.payload);
+                state.status = 'succeeded';
+            })
+            .addCase(updateAddress.fulfilled, (state, action) => {
+                if (!action.payload?.id) {
+                    state.status = 'failed';
+                    console.log('Update could not complete!');
+                    console.log(action.payload);
+                    return;
+                }
+                state.address.upsertOne(state, action.payload);
+                state.status = 'succeeded';
+            })
+            .addCase(deleteAddress.fulfilled, (state, action) => {
+                state.address = state.address.filter((item) => item.id !== action.payload);
                 state.status = 'succeeded';
             })
     }
