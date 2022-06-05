@@ -32,7 +32,7 @@ export const postAddress = createAsyncThunk('api/address/post', async (address, 
 export const updateAddress = createAsyncThunk('api/address/update', async (address, { rejectWithValue }) => {
     try {
         const { id } = address;
-        const response = await axios.put(`${BASE_URL}/${id}`);
+        const response = await axios.put(`${BASE_URL}${id}`);
         return response.data;
     } catch (err) {
         console.log(err);
@@ -43,7 +43,7 @@ export const updateAddress = createAsyncThunk('api/address/update', async (addre
 export const deleteAddress = createAsyncThunk('api/address/delete', async (address, { rejectWithValue }) => {
     try {
         const { id } = address;
-        const response = await axios.delete(`${BASE_URL}/${id}`);
+        const response = await axios.delete(`${BASE_URL}${id}`);
         if (response?.status === 200) return address;
         return `${response.status === 200}: ${response?.statusText}`;
     } catch (err) {
@@ -85,7 +85,8 @@ const addressSlice = createSlice({
                 state.status = 'succeeded';
             })
             .addCase(deleteAddress.fulfilled, (state, action) => {
-                state.address = state.address.filter((item) => item.id !== action.payload);
+                let { pk } = action.payload;
+                state.address = state.address.splice(pk, 1);
                 state.status = 'succeeded';
             })
     }
@@ -94,5 +95,6 @@ const addressSlice = createSlice({
 export const addressStatus = (state) => state.address.status;
 export const addressError = (state) => state.address.error;
 export const selectAllAddress = (state) => state.address;
+export const getAddressByPk = (state, pk) => state.address.address.find(address => address.id === pk);
 
 export default addressSlice.reducer
