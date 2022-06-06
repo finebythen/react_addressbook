@@ -8,8 +8,8 @@ const AddressList = () => {
 
     const dispatch = useDispatch();
     
-    const { address } = useSelector(selectAllAddress);
-
+    const address = useSelector(selectAllAddress);
+    
     useEffect(() => {
         dispatch(fetchAddress());
     }, [dispatch]);

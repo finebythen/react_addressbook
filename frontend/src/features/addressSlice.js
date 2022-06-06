@@ -1,13 +1,17 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = 'http://127.0.0.1:8000/api/address/';
 
-const initialState = {
+const addressAdapter = createEntityAdapter({
+    sortComparer: (a, b) => a.last_name.localeCompare(b.last_name),
+});
+
+const initialState = addressAdapter.getInitialState({
     address: [],
     status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null
-}
+});
 
 export const fetchAddress = createAsyncThunk('api/address/get', async (address, { rejectWithValue }) => {
     try {
@@ -62,7 +66,8 @@ const addressSlice = createSlice({
                 state.status = 'loading';
             })
             .addCase(fetchAddress.fulfilled, (state, action) => {
-                state.address = action.payload;
+                // add any fetched posts to array (with adapter)
+                addressAdapter.upsertMany(state, action.payload);
                 state.status = 'succeeded';
             })
             .addCase(fetchAddress.rejected, (state, action) => {
@@ -71,7 +76,8 @@ const addressSlice = createSlice({
                 state.error = action.error.message;
             })
             .addCase(postAddress.fulfilled, (state, action) => {
-                state.address.push(action.payload);
+                // add new created object to array (with adapter)
+                addressAdapter.addOne(state, action.payload);
                 state.status = 'succeeded';
             })
             .addCase(updateAddress.fulfilled, (state, action) => {
@@ -85,16 +91,25 @@ const addressSlice = createSlice({
                 state.status = 'succeeded';
             })
             .addCase(deleteAddress.fulfilled, (state, action) => {
-                let { pk } = action.payload;
-                state.address = state.address.splice(pk, 1);
+                if (!action.meta.arg?.id) {
+                    state.status = 'failed';
+                    console.log('Delete could not complete!');
+                    console.log(action.payload);
+                    return;
+                }
+                const { id } = action.meta.arg;
+                addressAdapter.removeOne(state, id);
                 state.status = 'succeeded';
             })
     }
 });
 
+export const {
+    selectAll: selectAllAddress,
+    selectById: selectAddressById,
+} = addressAdapter.getSelectors(state => state.address);
+
 export const addressStatus = (state) => state.address.status;
 export const addressError = (state) => state.address.error;
-export const selectAllAddress = (state) => state.address;
-export const getAddressByPk = (state, pk) => state.address.address.find(address => address.id === pk);
 
 export default addressSlice.reducer

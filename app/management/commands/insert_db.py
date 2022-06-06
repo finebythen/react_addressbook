@@ -24,6 +24,7 @@ class Command(BaseCommand):
 
             print('*' * 25)
             print("Der Befehl 'insert_db' wurde erfolgreich ausgeführt.")
+            print("Dem DB-Model 'Address' wurden 10 neue Beispieleinträge hinzugefügt.")
             print('*' * 25)
         else:
             print('*' * 25)

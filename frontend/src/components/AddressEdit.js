@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from "react-router-dom";
-import { getAddressByPk, updateAddress, deleteAddress } from "../features/addressSlice";
+// import { getAddressByPk, updateAddress, deleteAddress } from "../features/addressSlice";
+import { selectAddressById, updateAddress, deleteAddress } from "../features/addressSlice";
 import InputUnstyled from '@mui/base/InputUnstyled';
 import { styled } from '@mui/system';
 import Stack from '@mui/material/Stack';
@@ -53,7 +54,8 @@ const AddressEdit = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const address = useSelector((state) => getAddressByPk(state, Number(pk)));
+    // const address = useSelector((state) => getAddressByPk(state, Number(pk)));
+    const address = useSelector((state) => selectAddressById(state, Number(pk)));
     
     const [firstName, setFirstName] = useState(address?.first_name);
     const [lastName, setLastName] = useState(address?.last_name);
