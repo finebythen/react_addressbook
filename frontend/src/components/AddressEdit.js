@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from "react-router-dom";
-// import { getAddressByPk, updateAddress, deleteAddress } from "../features/addressSlice";
 import { selectAddressById, updateAddress, deleteAddress } from "../features/addressSlice";
 import InputUnstyled from '@mui/base/InputUnstyled';
 import { styled } from '@mui/system';
@@ -54,9 +53,9 @@ const AddressEdit = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // const address = useSelector((state) => getAddressByPk(state, Number(pk)));
     const address = useSelector((state) => selectAddressById(state, Number(pk)));
     
+    const [addressId, setAddressId] = useState(address?.id);
     const [firstName, setFirstName] = useState(address?.first_name);
     const [lastName, setLastName] = useState(address?.last_name);
     const [mail, setMail] = useState(address?.email);
@@ -68,7 +67,7 @@ const AddressEdit = () => {
     const onMailChanged = (e) => setMail(e.target.value);
     const onCountryChanged = (e) => setCountry(e.target.value);
 
-    const canEdit = [firstName, lastName, mail, country].every(Boolean) && requestStatus === 'idle';
+    const canEdit = [addressId, firstName, lastName, mail, country].every(Boolean) && requestStatus === 'idle';
 
     if (!address) {
         return(
@@ -86,8 +85,9 @@ const AddressEdit = () => {
         if (canEdit) {
             try {
                 setRequestStatus('pending');
-
+                
                 dispatch(updateAddress({
+                    id: addressId,
                     first_name: firstName,
                     last_name: lastName,
                     email: mail,
@@ -95,6 +95,7 @@ const AddressEdit = () => {
                     slug: ''
                 })).unwrap();
 
+                setAddressId('');
                 setFirstName('');
                 setLastName('');
                 setMail('');
@@ -114,6 +115,7 @@ const AddressEdit = () => {
             setRequestStatus('pending');
             dispatch(deleteAddress({ id: pk })).unwrap();
 
+            setAddressId('');
             setFirstName('');
             setLastName('');
             setMail('');

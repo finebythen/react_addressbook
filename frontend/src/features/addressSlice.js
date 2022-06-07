@@ -13,7 +13,7 @@ const initialState = addressAdapter.getInitialState({
     error: null
 });
 
-export const fetchAddress = createAsyncThunk('api/address/get', async (address, { rejectWithValue }) => {
+export const fetchAddress = createAsyncThunk('api/address/get', async (_, { rejectWithValue }) => {
     try {
         const response = await axios.get(BASE_URL);
         return response.data;
@@ -36,7 +36,7 @@ export const postAddress = createAsyncThunk('api/address/post', async (address, 
 export const updateAddress = createAsyncThunk('api/address/update', async (address, { rejectWithValue }) => {
     try {
         const { id } = address;
-        const response = await axios.put(`${BASE_URL}${id}`);
+        const response = await axios.put(`${BASE_URL}${id}/`, address);
         return response.data;
     } catch (err) {
         console.log(err);
@@ -81,13 +81,13 @@ const addressSlice = createSlice({
                 state.status = 'succeeded';
             })
             .addCase(updateAddress.fulfilled, (state, action) => {
-                if (!action.payload?.id) {
+                if (!action.meta.arg?.id) {
                     state.status = 'failed';
                     console.log('Update could not complete!');
                     console.log(action.payload);
                     return;
                 }
-                state.address.upsertOne(state, action.payload);
+                addressAdapter.upsertOne(state, action.meta.arg);
                 state.status = 'succeeded';
             })
             .addCase(deleteAddress.fulfilled, (state, action) => {
