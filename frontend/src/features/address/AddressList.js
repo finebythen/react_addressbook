@@ -1,5 +1,5 @@
-import AddressTable from "../components/AddressTable";
-import AddressCreate from '../components/AddressCreate';
+import AddressTable from "../../features/address/AddressTable";
+import AddressCreate from './AddressCreate';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAddress, selectAllAddress } from "./addressSlice";
 import { useEffect } from "react";

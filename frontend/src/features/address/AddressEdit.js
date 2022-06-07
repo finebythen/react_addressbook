@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from "react-router-dom";
-import { selectAddressById, updateAddress, deleteAddress } from "../features/addressSlice";
+import { selectAddressById, updateAddress, deleteAddress } from "./addressSlice";
 import InputUnstyled from '@mui/base/InputUnstyled';
 import { styled } from '@mui/system';
 import Stack from '@mui/material/Stack';

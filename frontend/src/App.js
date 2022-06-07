@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Layout from './components/Layout';
-import AddressList from './features/AddressList';
-import AddressEdit from './components/AddressEdit';
+import AddressList from './features/address/AddressList';
+import AddressEdit from './features/address/AddressEdit';
 
 const App = () => {
 	return(

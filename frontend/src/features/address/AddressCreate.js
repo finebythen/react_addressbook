@@ -5,7 +5,7 @@ import InputUnstyled from '@mui/base/InputUnstyled';
 import { styled } from '@mui/system';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { postAddress } from '../features/addressSlice';
+import { postAddress } from './addressSlice';
 
 const blue = {
     100: '#DAECFF', 200: '#80BFFF', 400: '#3399FF', 600: '#0072E5',
